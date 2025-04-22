@@ -4,6 +4,7 @@ import logging
 import argparse
 import platform
 import subprocess
+from security import safe_command
 
 def run_command(command, shell=False, log_step=None):
     """Run a system command and ensure it succeeds."""
@@ -11,13 +12,13 @@ def run_command(command, shell=False, log_step=None):
         log_file = os.path.join(args.log_dir, log_step + ".log")
         with open(log_file, "w") as f:
             try:
-                subprocess.run(command, shell=shell, check=True, stdout=f, stderr=f)
+                safe_command.run(subprocess.run, command, shell=shell, check=True, stdout=f, stderr=f)
             except subprocess.CalledProcessError as e:
                 logging.error(f"Error occurred while running command: {e}, check details in {log_file}")
                 sys.exit(1)
     else:
         try:
-            subprocess.run(command, shell=shell, check=True)
+            safe_command.run(subprocess.run, command, shell=shell, check=True)
         except subprocess.CalledProcessError as e:
             logging.error(f"Error occurred while running command: {e}")
         sys.exit(1)

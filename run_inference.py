@@ -4,11 +4,12 @@ import signal
 import platform
 import argparse
 import subprocess
+from security import safe_command
 
 def run_command(command, shell=False):
     """Run a system command and ensure it succeeds."""
     try:
-        subprocess.run(command, shell=shell, check=True)
+        safe_command.run(subprocess.run, command, shell=shell, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while running command: {e}")
         sys.exit(1)
